@@ -1,6 +1,6 @@
 import turtle
 import pandas
-from state_names import StateNames
+from state_tracker import StateTracker
 
 screen = turtle.Screen()
 screen.title("U.S. States Game")
@@ -14,16 +14,19 @@ data_dict = data.to_dict()
 states_dict = data_dict["state"]
 x_dict = data_dict["x"]
 y_dict = data_dict["y"]
-state_names = StateNames()
+state_tracker = StateTracker()
 
-is_game_on = True
+while True:
+    if state_tracker.score == state_tracker.total:
+        state_tracker.write_state("Congrats! You got it all!", 0, 300)
+        break
 
-while is_game_on:
-    answer = screen.textinput(title="Guess a State", prompt="What is another state name?").title()
+    answer = screen.textinput(title=f"{state_tracker.score}/{state_tracker.total} States Correct", prompt="What is another state name?").title()
 
     for key in states_dict:
         if answer == states_dict[key]:
             print(x_dict[key], y_dict[key])
-            state_names.write_state(answer, x_dict[key], y_dict[key])
+            state_tracker.write_state(answer, x_dict[key], y_dict[key])
+            state_tracker.update_score()
 
 turtle.mainloop()
