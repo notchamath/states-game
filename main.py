@@ -13,12 +13,7 @@ turtle.shape(image)
 
 # Read csv using pandas
 data = pandas.read_csv("50_states.csv")
-
-# Turn csv into a dict
-data_dict = data.to_dict()
-states_dict = data_dict["state"]
-x_dict = data_dict["x"]
-y_dict = data_dict["y"]
+all_states = data.state.to_list()
 
 state_tracker = StateTracker()
 
@@ -29,12 +24,17 @@ while True:
         break
 
     # Get guess from user, make it Pascal case
-    answer = screen.textinput(title=f"{state_tracker.score}/{state_tracker.total} States Correct", prompt="What is another state name?").title()
+    answer = screen.textinput(title=f"{state_tracker.score}/{state_tracker.total} States Correct",
+                              prompt="What is another state name?").title()
 
-    # Check if user guess is in the states list
-    for key in states_dict:
-        if answer == states_dict[key]:
-            state_tracker.write_state(answer, x_dict[key], y_dict[key])
-            state_tracker.update_score()
+    # End game if user types exit
+    if answer == "Exit":
+        state_tracker.missing_states(all_states)
+        break
+
+    # Check if user guess is in the states list, if yes write state on map
+    if answer in all_states:
+        state = data[data.state == answer]
+        state_tracker.write_state(answer, int(state.x.iloc[0]), int(state.y.iloc[0]))
 
 turtle.mainloop()
