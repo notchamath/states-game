@@ -38,10 +38,6 @@ class StateTracker(Turtle):
         self.write(arg=name, font=FONT, align=ALIGN)
 
     def missing_states(self):
-        missing_list = []
-        for state in self.all_states:
-            if state not in self.correct_answers:
-                missing_list.append(state)
-
+        missing_list = [state for state in self.all_states if state not in self.correct_answers]
         missing_data = pandas.DataFrame(missing_list)
         missing_data.to_csv("states_to_learn.csv")
