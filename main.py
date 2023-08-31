@@ -1,5 +1,4 @@
 import turtle
-import pandas
 from state_tracker import StateTracker
 
 # Set up the Screen
@@ -10,10 +9,6 @@ screen.title("U.S. States Game")
 image = "blank_states_img.gif"
 screen.addshape(image)
 turtle.shape(image)
-
-# Read csv using pandas
-data = pandas.read_csv("50_states.csv")
-all_states = data.state.to_list()
 
 state_tracker = StateTracker()
 
@@ -27,14 +22,12 @@ while True:
     answer = screen.textinput(title=f"{state_tracker.score}/{state_tracker.total} States Correct",
                               prompt="What is another state name?").title()
 
-    # End game if user types exit
+    # End game if user types exit, produce a list of states they missed
     if answer == "Exit":
-        state_tracker.missing_states(all_states)
+        state_tracker.missing_states()
         break
 
-    # Check if user guess is in the states list, if yes write state on map
-    if answer in all_states:
-        state = data[data.state == answer]
-        state_tracker.write_state(answer, int(state.x.iloc[0]), int(state.y.iloc[0]))
+    # Check if user answer is correct
+    state_tracker.check_answer(answer)
 
 turtle.mainloop()
